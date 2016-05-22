@@ -3,6 +3,17 @@
 
 """
 Creates an RSS feed from HackerNews because there isn't a good one out there.
+
+COPYLEFT NOTICE
+---------------
+Copyright 2016 David Lowry-Duda
+
+You are free to redistribute and/or modify HNRSS under the
+terms of the MIT License.
+
+I'm happy if you find HNRSS useful, but be advised that
+it comes WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 """
 
 from urllib.request import urlopen
