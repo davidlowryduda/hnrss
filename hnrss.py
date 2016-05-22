@@ -33,11 +33,11 @@ class HNrss(object):
 
     def __init__(self,
                  api,
+                 title="Unofficial HackerNews RSS",
                  link="https://news.ycombinator.com",
-                 numposts=10):
-                 #title="Unofficial HackerNews RSS",
+                 numposts=1):
                  #description="A work in progress",
-        self.title = "Unofficial HackerNews RSS."
+        self.title = title
         self.link = link
         self.description = ("Created and maintained by David Lowry-Duda "
                             "<davidlowryduda@davidlowryduda.com> "
@@ -66,8 +66,9 @@ class HNrss(object):
 
             post_text += ("<p>Current post score: {}. "
                           "Full comments are at "
-                          "https://news.ycombinator.com/item?id={}</p>"
-                          ).format(post_score, pid)
+                          "<a href='https://news.ycombinator.com/item?id={}'>"
+                          "https://news.ycombinator.com/item?id={}</a></p>"
+                          ).format(post_score, pid, pid)
 
             if post_kids:
                 post_text += ("<h3> Top Comments </h3><ol>\n\n")
@@ -125,7 +126,7 @@ class HNrss(object):
 
 def main_top():
     "Generate the feed for TOP posts"
-    hntest = HNrss(HN_TOP_URL)
+    hntest = HNrss(HN_TOP_URL, title="Unofficial HackerNews top post RSS")
     hntest.generate_feed()
     return hntest
 
