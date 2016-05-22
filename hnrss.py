@@ -35,7 +35,7 @@ class HNrss(object):
                  api,
                  title="Unofficial HackerNews RSS",
                  link="https://news.ycombinator.com",
-                 numposts=1):
+                 numposts=5):
                  #description="A work in progress",
         self.title = title
         self.link = link
@@ -88,7 +88,7 @@ class HNrss(object):
             self.feed.append_item(title=post_title,
                                   author=post_author,
                                   link=post_url,
-                                  date=post_time,
+                                  pubDate=post_time,
                                   description=post_text)
     def make_xml(self):
         "Generate xml in `self.xml` from `self.feed`"
