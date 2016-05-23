@@ -67,7 +67,7 @@ class HNrss(object):
 
             if not post_text:
                 post_text = ("<h2>Automated summary of {}.</h2>\n"
-                             "[There may be errors].\n<p>")
+                             "[There may be errors].\n<p>").format(post_url)
                 post_text += summarizer.summarize(post_url)
                 post_text += "</p>"
 
