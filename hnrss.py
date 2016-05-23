@@ -20,6 +20,7 @@ from urllib.request import urlopen
 import feedmaker as rss2feed
 import json
 import time
+import summarizer
 
 # From the HN API
 HN_API_BASE_URL = "https://hacker-news.firebaseio.com/v0/"
@@ -63,6 +64,12 @@ class HNrss(object):
             post_time = self._format_time(post_data.get('time'))
             post_url = post_data.get('url', "")
             post_text = post_data.get('text', "")
+
+            if not post_text:
+                post_text = ("<h2>Automated summary of {}.</h2>\n"
+                             "[There may be errors].\n<p>")
+                post_text += summarizer.summarize(post_url)
+                post_text += "</p>"
 
             post_text += ("<p>Current post score: {}. "
                           "Full comments are at "
