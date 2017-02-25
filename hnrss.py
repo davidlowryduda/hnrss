@@ -4,12 +4,13 @@
 """
 Creates an RSS feed from HackerNews because there isn't a good one out there.
 
-COPYLEFT NOTICE
+COPYRIGHT NOTICE
 ---------------
-Copyright 2016 David Lowry-Duda
+Copyright 2016-2017 David Lowry-Duda
 
 You are free to redistribute and/or modify HNRSS under the
-terms of the MIT License.
+terms of the MIT License. A copy of this license should be made available with
+the source.
 
 I'm happy if you find HNRSS useful, but be advised that
 it comes WITHOUT ANY WARRANTY; without even the implied warranty
@@ -36,7 +37,7 @@ class HNrss(object):
                  api,
                  title="Unofficial HackerNews RSS",
                  link="https://news.ycombinator.com",
-                 numposts=5):
+                 numposts=15):
                  #description="A work in progress",
         self.title = title
         self.link = link
@@ -52,9 +53,11 @@ class HNrss(object):
                                        description=self.description)
 
     def generate_feed(self):
-        "Fills the rss feed with `numpost` posts, each with at most 5 comments."
+        """
+        Fill the rss feed with `numpost` posts, each with at most 5 comments.
+        Attempt to make a summary of the post using summarizer.py.
+        """
         post_ids = self._get_post_ids(self.api)
-        # Now have a list of 50 post ids.
         for pid in post_ids:
             post_data = self._get_post_data(pid)
             post_title = post_data.get('title', "")
@@ -68,7 +71,11 @@ class HNrss(object):
             if not post_text:
                 post_text = ("<h2>Automated summary of {}.</h2>\n"
                              "[There may be errors].\n<p>").format(post_url)
-                post_text += summarizer.summarize(post_url)
+                try:
+                    post_text += summarizer.summarize(post_url)
+                except Exception as e:
+                    post_text += "Error durring automated summary. No summary available."
+
                 post_text += "</p>"
 
             post_text += ("<p>Current post score: {}. "
@@ -80,7 +87,7 @@ class HNrss(object):
             if post_kids:
                 post_text += ("<h3> Top Comments </h3><ol>\n\n")
 
-            for kid in post_kids[:5]:
+            for kid in post_kids[:4]:
                 kid_data = self._get_post_data(kid)
                 kid_text = ("<h3><li>{author} at {time}</h3>\n"
                             "<p>{text}</li>").format(
@@ -101,7 +108,6 @@ class HNrss(object):
         "Generate xml in `self.xml` from `self.feed`"
         self.xml = self.feed.get_xml()
         return
-
 
     def _get_post_ids(self, url):
         "Return a list containing the post ids."
@@ -133,7 +139,7 @@ class HNrss(object):
 
 def main_top():
     "Generate the feed for TOP posts"
-    hntest = HNrss(HN_TOP_URL, title="Unofficial HackerNews top post RSS")
+    hntest = HNrss(HN_TOP_URL, title="Unofficial HackerNews test post RSS")
     hntest.generate_feed()
     return hntest
 
@@ -141,4 +147,3 @@ if __name__ == "__main__":
     HN_TOP = main_top()
     with open("testrss.html", "w") as f:
         f.write(HN_TOP.feed.get_xml())
-
