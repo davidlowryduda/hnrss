@@ -18,6 +18,7 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 """
 
 from urllib.request import urlopen
+from timeout import timeout
 import feedmaker as rss2feed
 import json
 import time
@@ -72,9 +73,14 @@ class HNrss(object):
                 post_text = ("<h2>Automated summary of {}.</h2>\n"
                              "[There may be errors].\n<p>").format(post_url)
                 try:
-                    post_text += summarizer.summarize(post_url)
-                except Exception as e:
-                    post_text += "An error during automated summary. No summary available."
+                    with timeout(seconds=15):
+                        post_text += summarizer.summarize(post_url)
+                except TimeoutError:
+                    post_text += "Automated summary timed out. No summary available."
+                except Exception:
+                    post_text += "Unknown error occurred during automated " +
+                                 "summary. No Summary available."
+
 
                 post_text += "</p>"
 
