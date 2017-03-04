@@ -24,6 +24,10 @@ import json
 import time
 import summarizer
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 # From the HN API
 HN_API_BASE_URL = "https://hacker-news.firebaseio.com/v0/"
 HN_BEST_URL = HN_API_BASE_URL + "beststories.json"
@@ -38,7 +42,7 @@ class HNrss(object):
                  api,
                  title="Unofficial HackerNews RSS",
                  link="https://news.ycombinator.com",
-                 numposts=15):
+                 numposts=25):
                  #description="A work in progress",
         self.title = title
         self.link = link
@@ -75,11 +79,14 @@ class HNrss(object):
                 try:
                     with timeout(seconds=15):
                         post_text += summarizer.summarize(post_url)
+                        logger.debug("No problem occurred during summary")
                 except TimeoutError:
                     post_text += "Automated summary timed out. No summary available."
+                    logger.info("Timeout occurred during automated summary.")
                 except Exception:
-                    post_text += "Unknown error occurred during automated " +
+                    post_text += "Unknown error occurred during automated " + \
                                  "summary. No Summary available."
+                    logger.error("Automated summary failed for UNKNOWN reason")
 
 
                 post_text += "</p>"
