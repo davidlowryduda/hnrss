@@ -74,7 +74,7 @@ class HNrss(object):
                 try:
                     post_text += summarizer.summarize(post_url)
                 except Exception as e:
-                    post_text += "Error durring automated summary. No summary available."
+                    post_text += "An error during automated summary. No summary available."
 
                 post_text += "</p>"
 
